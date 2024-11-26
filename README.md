@@ -36,3 +36,19 @@
 ```bash
 git clone https://github.com/yourusername/telegram-ticket-bot.git
 cd telegram-ticket-bot
+```
+
+### 2️⃣ Встановлення Python і залежностей  
+Переконайтеся, що на вашому комп’ютері встановлено Python версії 3.8 або новішої. Якщо Python ще не встановлений, завантажте його з офіційного сайту.
+
+Встановіть необхідні бібліотеки, використовуючи ```pip```
+```bash
+pip install -r requirements.txt
+```
+
+### 3️⃣ Створення та налаштування .env файлу
+Для конфігурації бота необхідно створити файл .env у кореневій директорії проекту. Додайте до нього наступні змінні:
+```env
+BOT_TOKEN=your_telegram_bot_token
+PAYMENT_API_KEY=your_payment_api_key
+ADMIN_ID=your_telegram_id```
