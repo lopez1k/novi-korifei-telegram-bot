@@ -4,7 +4,7 @@ from aiogram.filters import Command
 from datetime import datetime
 from utils.keyboards.inline_builder import tickets_kb
 from utils.keyboards.reply_kb import main_kb
-from utils.requestsbd import create_spect_db, check_admin, get_all_users, get_sheets, get_suggestions
+from utils.requestsbd import create_spect_db, check_admin, get_all_users, get_sheets
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup 
 from aiogram.exceptions import TelegramBadRequest
@@ -16,8 +16,6 @@ acom_router = Router()
 class FormCreate(StatesGroup):
     name = State()
     desc = State()
-    price = State()
-    ticket_photo = State()
     place = State()
     date = State()
 
@@ -68,20 +66,9 @@ async def create_spect_name(msg: Message, state: FSMContext):
 @acom_router.message(FormCreate.desc)
 async def create_spect_desc(msg: Message, state: FSMContext):
     await state.update_data(desc = msg.text)
-    await state.set_state(FormCreate.price)
-    await msg.reply("Тепер введіть вартість.")
-
-@acom_router.message(FormCreate.price)
-async def create_spect_desc(msg: Message, state: FSMContext):
-    await state.update_data(price = msg.text)
-    await state.set_state(FormCreate.ticket_photo)
-    await msg.reply("Тепер введіть посилання на фото квитка.")
-
-@acom_router.message(FormCreate.ticket_photo)
-async def create_spect_desc(msg: Message, state: FSMContext):
-    await state.update_data(ticket_photo = msg.text)
     await state.set_state(FormCreate.place)
     await msg.reply("Тепер введіть місце проведення вистави.")
+
 
 @acom_router.message(FormCreate.place)
 async def create_spect_place(msg: Message, state: FSMContext):
@@ -94,24 +81,13 @@ async def create_spect_place(msg: Message, bot: Bot, state: FSMContext):
     data = await state.get_data()
     name = data['name']
     desc = data['desc']
-    price = data['price']
-    photo = data['ticket_photo']
     place = data['place']
     date = msg.text
     await state.clear()
-    await create_spect_db(name, desc, place, date, price, photo)
+    await create_spect_db(name, desc, place, date)
     await msg.reply("Ви успішно створили нову виставу.", reply_markup = main_kb)
     users = await get_all_users()
     for user in users:
         with suppress(TelegramBadRequest):
             await bot.send_message(chat_id=user[1], text = f'<b>Ми підготували нову виставу:</b> <i>{name}</i>. <b>Хутчіше заходьте у розділ "Найближчі вистави".</b>')
 
-
-@acom_router.message(Command('suggest'))
-async def asuggest(msg: Message):
-    user_suggestions = await get_suggestions()
-    user_list_text = "Список пропозицій користувача:\n"
-    for id, owner_id, owner_name, owner_phone, spect, date, in user_suggestions:
-        user_info = f"🎫<b>№</b>: {id} {owner_name}, <b>📱Номер телефону:📱</b> {owner_phone}, <b>🏛Вистава:</b> {spect}. 📅Дата: {date}🎫\n\n———————————————-\n\n"
-        user_list_text += user_info
-    await msg.answer(user_list_text, parse_mode="html")

@@ -19,8 +19,7 @@ main_kb = ReplyKeyboardMarkup(
             KeyboardButton(text = "Залишити запитання")
         ],
         [
-            KeyboardButton(text = "Найближчі вистави"),
-            KeyboardButton(text= "Запропонувати виставу")
+            KeyboardButton(text = "Найближчі вистави")
         ]
     ], 
     resize_keyboard = True

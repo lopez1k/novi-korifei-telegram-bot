@@ -1,25 +1,15 @@
-from aiogram import F, Router, Bot
-from aiogram.types import Message, CallbackQuery
-from utils.requestsbd import exists_user, create_user, create_ticket, insert_feedback, insert_suggestion
+from aiogram import F, Router
+from aiogram.types import Message
+from aiogram.filters import Command, CommandObject, CommandStart
+from utils.requestsbd import exists_user, create_user, create_ticket
 from utils.keyboards.inline_builder import spectacls, soc_merezhi
 from utils.keyboards.reply_kb import main_kb
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from datetime import datetime
-from utils.otherfunc import greet
-from data.config import LOG_CHAT
-
-
 
 
 uohandle = Router()
-
-
-class Suggestion(StatesGroup):
-    namevistava = State()
-
-class Feedback(StatesGroup):
-    feedback = State()
 
 class RegForm(StatesGroup):
     title = State()
@@ -49,30 +39,13 @@ async def closest_spectacls(msg: Message):
     kb = await spectacls()
     time = datetime.now()
     now_time = time.strftime("%d-%m-%y %H:%M:%S")
-    await msg.answer_photo(photo = "https://telegra.ph/file/71f02301ec9deaf902106.jpg", caption= f"<i>Найближчі вистави станом на </i><b>{now_time}</b>", reply_markup = kb)
-
-
-@uohandle.message(F.text.lower() == "запропонувати виставу") 
-async def suggest_vistavu(msg: Message, state: FSMContext):
-    await state.set_state(Suggestion.namevistava)
-    await msg.reply("Введіть назву вистави, яку хотіли б бачити у нашому виконанні.")
-
-
-
-@uohandle.message(Suggestion.namevistava)
-async def state_suggestion(msg: Message, state: FSMContext, bot: Bot): 
-    await state.clear()
-    await insert_suggestion(msg.from_user.id, msg.text)
-    await msg.answer(f"Ваша пропозиція буде врахована. <b>{greet()}</b>")
-    await bot.send_message(chat_id=LOG_CHAT, text = f"Надійшла нова пропозиція щодо вистави:\n<code>{msg.text}</code>", message_thread_id=1291)
-
-
+    await msg.reply(f"<i>Найближчі вистави станом на </i><b>{now_time}</b>", reply_markup = kb)
 
 @uohandle.message(F.text.lower() == "залишити запитання")
 async def profile(msg: Message, state: FSMContext):
     await msg.reply("Введіть опис проблеми")
     await state.set_state(RegForm.title)
-    
+
 
 
 
@@ -80,25 +53,4 @@ async def profile(msg: Message, state: FSMContext):
 async def reg_ticket(msg: Message, state: FSMContext):
     await create_ticket(msg.from_user.id, msg.text)
     await state.clear()
-    await msg.reply(f"Ви успішно створили запитання. Очікуйте відповіді❤️. {greet()}", reply_markup = main_kb)
-
-
-
-@uohandle.callback_query(F.data.startswith("feedback_"))
-async def feedback_callback(call: CallbackQuery, state: FSMContext):
-    await call.answer()
-    await call.message.answer("Відправте відгук:")
-    await state.set_state(Feedback.feedback)
-    await state.update_data(name = call.data[9:])
-
-@uohandle.message(Feedback.feedback)
-async def state_handler_feedback(msg: Message, state: FSMContext):
-    data = await state.get_data()
-    name_spect = data['name']
-    await state.clear()
-    await insert_feedback(msg.from_user.id, msg.text, name_spect)
-    await msg.answer_sticker(sticker = "CAACAgQAAxUAAWY0zUlxc_wAAenM72RFn662X3hehQACIh0AAlF9AAFQbzZh3VBYo6U0BA")
-    await msg.reply("Дякуємо вам за відгук. Завдяки вам ми стаємо кращими.❤️", reply_markup = main_kb)
-    print(name_spect, msg.text)
-
-    
+    await msg.reply("Ви успішно створили запитання. Очікуйте відповіді❤️", reply_markup = main_kb)
