@@ -70,7 +70,7 @@ pip install -r requirements.txt
 ```env
 BOT_TOKEN=your_telegram_bot_token
 PAYMENT_API_KEY=your_payment_api_key
-ADMIN_ID=your_telegram_id```
+LOG_CHAT=your_log_chat_id```
 ```
 ---
 
