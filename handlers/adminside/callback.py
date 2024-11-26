@@ -3,8 +3,9 @@ from aiogram.types import Message, CallbackQuery
 
 from utils.requestsbd import get_need_ticket, delete_ticket, check_admin
 from utils.keyboards.inline_builder import kb_in_ticket, tickets_kb
+
 from datetime import datetime
-from data.config import LOG_CHAT
+
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 
@@ -35,7 +36,7 @@ async def ticket_choice(call: CallbackQuery, state: FSMContext, bot: Bot):
             await delete_ticket(tid)
             await call.message.answer(f"<b>Закрито тікет під номером</b> <i>{tid}</i>")
             await bot.send_message(user_id, f"<b>Модератор закрив ваш тікет!</b>")
-            await bot.send_message(chat_id = LOG_CHAT, text = f"<b>Модератор <code>{call.from_user.full_name}</code> закрив тікет під номером {tid}</b>", message_thread_id = 1291)
+            await bot.send_message(chat_id = -1001952618666, text = f"<b>Модератор <code>{call.from_user.full_name}</code> закрив тікет під номером {tid}</b>", message_thread_id = 1291)
             
 
         elif call.data == 'answer_to_ticket':
@@ -51,7 +52,7 @@ async def answer_to_ticket(msg: Message, state: FSMContext, bot: Bot):
     await bot.send_message(user_id, f"<b>Відповідь від модератора:</b> <code>{msg.from_user.full_name}</code>\n\n<i>{msg.text}</i>")
     await state.clear()
     await msg.answer("Ви відповили користувачу!", show_alert = True)
-    await bot.send_message(chat_id = LOG_CHAT, text = f"<b>Модератор <code>{msg.from_user.full_name}</code> відповів на тікет. Відповідь: <code>{msg.text}</code></b>", message_thread_id = 1291)
+    await bot.send_message(chat_id = -1001952618666, text = f"<b>Модератор <code>{msg.from_user.full_name}</code> відповів на тікет. Відповідь: <code>{msg.text}</code></b>", message_thread_id = 1291)
         
 
 @acall_router.callback_query(F.data.startswith("ti_"))

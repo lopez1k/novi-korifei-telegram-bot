@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from utils.requestsbd import get_spect, get_tickets, create_request_ticket
+from utils.requestsbd import get_spect, get_tickets
 
 async def spectacls():
     tickets = await get_spect()
@@ -10,16 +10,6 @@ async def spectacls():
     keyboard.adjust(2)
     return keyboard.as_markup()
         
-
-async def feed(name):
-    feedback = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(text = "Залишити відгук про виставу", callback_data = f"feedback_{name}")
-            ]
-        ]
-    )
-    return feedback
 
 return_kb = InlineKeyboardMarkup(
     inline_keyboard= [
@@ -34,20 +24,17 @@ async def buy_kb(name):
     buy_kb = InlineKeyboardMarkup(
         inline_keyboard= [
             [
-                InlineKeyboardButton(text = "💵Придбати💵", callback_data = f"buy_{name}")
-            ],
-            [InlineKeyboardButton(text = "Повернутись", callback_data = "return_to_spect")]
+                InlineKeyboardButton(text = "Придбати", callback_data = f"buy_{name}")
+            ]
         ]
     )
     return buy_kb
 
-async def aceppt_kb(id, uid):
-    id = await create_request_ticket(id, uid)
+async def aceppt_kb(id):
     buy_kb = InlineKeyboardMarkup(
         inline_keyboard= [
             [
-                InlineKeyboardButton(text = "✅Підтвердити✅", callback_data = f"acct_{id}"),
-                InlineKeyboardButton(text = "❌Відхилити❌", callback_data = f"dect_{id}")
+                InlineKeyboardButton(text = "Придбати", callback_data = f"acc_{id}")
             ]
         ]
     )
@@ -85,12 +72,15 @@ kb_in_ticket = InlineKeyboardMarkup(
 soc_merezhi = InlineKeyboardMarkup(
     inline_keyboard=[
         [
-            InlineKeyboardButton(text = 'Instagram', url = 'https://www.instagram.com/novikorifei/'),
-            InlineKeyboardButton(text = 'Facebook', url = 'https://www.facebook.com/people/Театральна-студія-Нові-корифеї/61559699540927/')
+            InlineKeyboardButton(text = 'Instagram', url = 'instagram.com'),
+            InlineKeyboardButton(text = 'Facebook', url = 'facebook.com')
         ],
         [
-            InlineKeyboardButton(text = 'Telegram', url = 'https://t.me/novikorifei'),
-            InlineKeyboardButton(text = 'Gmail', url = 'https://mail.google.com/mail/u/0/?fs=1&to=novikorifei@gmail.com&tf=cm')
+            InlineKeyboardButton(text = 'Twitter', url = 'twitter.com'),
+            InlineKeyboardButton(text = 'Site', url = 'google.com')
+        ],
+        [
+            InlineKeyboardButton(text = 'Youtube', url = 'youtube.com')
         ]
     ]
 )
