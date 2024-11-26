@@ -53,7 +53,7 @@
 
 ### 1. Клонування репозиторію  
 ```bash
-git clone https://github.com/yourusername/telegram-ticket-bot.git
+git clone https://github.com/lopez1k/novi-korifei-telegram-bot.git
 cd telegram-ticket-bot
 ```
 
