@@ -1,0 +1,44 @@
+from aiogram import Bot, Dispatcher
+import asyncio
+from utils.create_db import CreateDB
+from handlers.userside import ucommands, other_handler, closest_spect, payment
+from handlers.adminside import acommands, callback
+from data.config import TOKEN, bot_commands, admin_commands
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from utils.delete_spect import interval_message
+from aiogram.fsm.storage.redis import RedisStorage
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s: %(message)s',
+    datefmt='%d-%b-%y %H:%M:%S',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('app.log', mode='a', encoding='utf-8')  
+    ]
+)
+
+async def main():
+    scheduler = AsyncIOScheduler(timezone = "Europe/Kyiv")
+    bot = Bot(TOKEN, parse_mode="html") 
+    dp = Dispatcher(storage=RedisStorage.from_url('redis://localhost:6379/0'))
+    dp.include_routers(ucommands.ucoms, 
+                       other_handler.uohandle, 
+                       closest_spect.spect_callback, 
+                       acommands.acom_router, 
+                       callback.acall_router, 
+                       payment.payment_rt)
+    scheduler.add_job(interval_message, trigger= 'interval', hours = 5, args=[bot])
+    await interval_message(bot)
+    scheduler.start()
+    await bot.delete_webhook(drop_pending_updates=True)
+    await bot.set_my_commands(bot_commands)
+    await dp.start_polling(bot)
+    CreateDB()
+    print("start")
+    
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
