@@ -2,7 +2,7 @@ from sqlite3 import connect
 import sqlite3
 from datetime import datetime
 import qrcode
-import os
+
 
 
 async def exists_user(uid):

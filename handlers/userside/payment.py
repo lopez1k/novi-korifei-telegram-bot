@@ -2,7 +2,6 @@ from aiogram import F, Router, Bot
 from aiogram.types import CallbackQuery, LabeledPrice, PreCheckoutQuery, Message, FSInputFile, ReactionTypeEmoji
 from utils.requestsbd import get_cur_spect_name, get_cur_spect_price, getiser, create_ticketss
 from utils.keyboards.inline_builder import buy_kb, aceppt_kb
-from data.config import PAYMENT_TOKEN
 import os
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
