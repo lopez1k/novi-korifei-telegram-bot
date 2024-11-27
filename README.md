@@ -54,7 +54,7 @@
 ### 1. Клонування репозиторію  
 ```bash
 git clone https://github.com/lopez1k/novi-korifei-telegram-bot.git
-cd telegram-ticket-bot
+cd novi-korifei-telegram-bot
 ```
 
 ### 2️⃣ Встановлення Python і залежностей  
